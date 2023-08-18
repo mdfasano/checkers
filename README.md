@@ -50,20 +50,78 @@
     - each player's pieces starting on opposite sides of the board.
 - have the current players turn displayed.
 - have movable pieces lightly highlighted.
-- be able to select a piece to move by clicking on it
-    - recieve light feedback if an ineligable piece is clicked
-    - while a piece is selected, I want to see light highlighting of spaces to which it can be moved
-    - be able to deselect a piece by clicking elsewhere in the window
-        - without receiving an error for unviable clicks
-        - should still be able to select my viable pieces without having to click twice
-    - be able to move a piece by selecting a viable tile to move to
-        - I want to see feedback for what I am about to click on while hovering my mouse over it
-    - be able to capture opponents pieces and see them removed from the board
-    - be able to upgrade to a leader
+- be able to select a piece to move by clicking on it.
+    - recieve light feedback if an ineligable piece is clicked.
+    - while a piece is selected, I want to see light highlighting of spaces to which it can be moved.
+    - be able to deselect a piece by clicking elsewhere in the window.
+        - without receiving an error for unviable clicks.
+        - should still be able to select my viable pieces without having to click twice.
+    - be able to move a piece by selecting a viable tile to move to.
+        - I want to see feedback for what I am about to click on while hovering my mouse over it.
+    - be able to capture opponents pieces and see them removed from the board.
+    - be able to upgrade to a leader.
         - see visual indication of which pieces are leaders
-- have the turn automatically transition to the next player when the active player has no viable actions left
-- see a winner displayed on the screen once a player has no possible moves to make on their turn
-## Psuedocode
+- have the turn automatically transition to the next player when the active player has no viable actions left.
+- see a winner displayed on the screen once a player has no possible moves to make on their turn.  
+  
+
+# Psuedocode  
+I want to write this code such that adding functionality for additional games with similar logic is relatively easy. I plan on using generic classes for the required game elements and then creating checkers specific subclasses that extend those baseline classes.  
+
+---
+### Required Constants
+- object to hold the height and width of the game board
+- an array of arrays to represent the game board tiles
+- a colors object using -1, 0 and 1 as keys for RED, EMPTY, and WHITE player piece markers
+
+
+### Cached DOM Elements
+- game board element
+- resign button
+- play again button
+- win/loss counter element
+- message element (turn indicator)
+
+## On Load...
+- cache necessary DOM elements
+- display a game board and player pieces in starting locations to the user
+- display RED's turn in message element
+- hide play again button
+- hide resign button
+- graveyard should be empty
+
+## Classes 
+### CheckersGame
+- winner variable, initialized to *null*
+- constant for 8x8 board size
+- handle checking for winner
+- handle beginning a game (play function)
+- render board function
+### BoardTile  
+- constant (object) representing player colors
+    - 1 = red, 0 = none, -1 = white
+- render tile function
+- function for determining where a player piece can move can move to
+- image lookup for player pieces linked to numeric values
+- event listener for clicks
+### Graveyard 
+- render function
+- variable for number of pieces in graveyard
+- constant for owner of graveyard
+### PlayingPiece
+- render function
+- color variable for which team it is on
+- event listener for clicks
+- contains a dynamically updating array holding viable locations piece can move to
+- movement function 
+- capture function
+- King function
+### KingPiece
+- extends PlayingPiece
+- overrides movement function
+- 
+
+
 ## Possible Additional Features
 - AI
 - Turn timers
