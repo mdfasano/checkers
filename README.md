@@ -1,10 +1,18 @@
-# Checkers
-> Play a classic game of checkers locally against a friend!
+# Checkers  
+
+### Play a classic game of checkers locally against a friend!  
+
 ---
+  
+    
+
+
 ## Wireframes
-![img1](img.link)  
-![img2](img.link)  
-! [img3](img.link)  
+[Figma Wireframing](https://www.figma.com/file/MQPcEbOaNF7M5grqDCnSnR/Checker-Board-(Community)?type=design&node-id=205%3A55&mode=design&t=gpYJ8cH4oqCSpRHW-1)   
+### Start of game setup
+![start of game setup](images/checkers_board_startgame.png)  
+### Full graveyard
+![full graveyard](images/checkers_game_empty.png)  
 ---
 ## Technologies Used
 -HTML  
