@@ -77,6 +77,12 @@ I want to write this code such that adding functionality for additional games wi
 
 ### Cached DOM Elements
 - game board element
+- offer draw button
+    - prevent all on click events while:
+        - pass priority to other player
+        - display accept and reject buttons to choose from
+            - reject gives priority back to first player
+            - accept sets winner variable to "tie" and calls check winner function
 - resign button
     - overrides the winner value and immediately calls the check winner function
 - play again button
@@ -89,7 +95,7 @@ I want to write this code such that adding functionality for additional games wi
 - cache necessary DOM elements
 - display a game board and player pieces in starting locations to the user
 - display RED's turn in message element
-- hide play again button
+- play again button
 - hide resign button
 - graveyard should be empty
 
@@ -97,9 +103,9 @@ I want to write this code such that adding functionality for additional games wi
 ### CheckersGame
 - winner variable, initialized to *null*
 - constant for 8x8 board size
-- handle checking for winner
-    - actually just checking for a loser
-    - if none of a players pieces have a location they can move to, that player loses
+- handle checking for winner/draw
+    - actually checking for a loser
+    - if a player has no moves to make, that player loses
 - render message function
     - displays winner if there is a winner
     - otherwise displays current player's turn
