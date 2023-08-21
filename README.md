@@ -78,7 +78,10 @@ I want to write this code such that adding functionality for additional games wi
 ### Cached DOM Elements
 - game board element
 - resign button
+    - overrides the winner value and immediately calls the check winner function
 - play again button
+    - appears only when there is a winner, after message is displayed
+    - hides itself any time a game starts
 - win/loss counter element
 - message element (turn indicator)
 
@@ -95,15 +98,24 @@ I want to write this code such that adding functionality for additional games wi
 - winner variable, initialized to *null*
 - constant for 8x8 board size
 - handle checking for winner
+    - actually just checking for a loser
+    - if none of a players pieces have a location they can move to, that player loses
+- render message function
+    - displays winner if there is a winner
+    - otherwise displays current player's turn
 - handle beginning a game (play function)
+    - places playing pieces in appropriate game start locations
 - render board function
+    - calls render on each tile
 ### BoardTile  
 - constant (object) representing player colors
     - 1 = red, 0 = none, -1 = white
 - render tile function
+    - calls render for any playing piece on the tile
 - function for determining where a player piece can move can move to
+    - usually called by playingpieces 
+    - returns an array of locations that piece can access
 - image lookup for player pieces linked to numeric values
-- event listener for clicks
 ### Graveyard 
 - render function
 - variable for number of pieces in graveyard
@@ -111,11 +123,27 @@ I want to write this code such that adding functionality for additional games wi
 ### PlayingPiece
 - render function
 - color variable for which team it is on
-- event listener for clicks
+- event listener, which does the following on click:
+    - returns if piece is not owned by active player, or if piece cannot move
+    - temporarily adds click event listener the game board:
+        - if clicked tile is able to be moved to by selected piece, initiates move function
+        - otherwise, removes the board event listener and returns game to playing piece selection state
+    - 
 - contains a dynamically updating array holding viable locations piece can move to
+- constructor
+    - adds a new playing piece object at specified location, with specified player ownership
+- remove funtion
+    - removes self from board
+    - adds self to graveyard
 - movement function 
+    - calls remove 
+    - calls constructor at new location. 
 - capture function
+    - calls remove funtion of piece being captued
+    - calls movement function to update location
 - King function
+    - creates a new King piece object at location of piece
+    - revomes current piece from play
 ### KingPiece
 - extends PlayingPiece
 - overrides movement function
