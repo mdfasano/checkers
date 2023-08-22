@@ -10,10 +10,22 @@ class CheckersPiece {
             this.location.rowIdx = rowIdx;
         } else if (arguments)
         if (arguments.length === 0) {
+            // if no parameters passed, a new object is created with both
+            // location and player as null
             this.player = null;
             this.location = null;
-        } else {
-
+        } else if (arguments.length === 1) {
+            // when one parameter is passed, it is treated as the 
+            // player indicator. The location is set to null
+            this.player = player;
+            this.location = null;
+        } else if (arguments.length === 2) {
+            // when two parameters are passed, assumes that they represent
+            // col and row index (in that order) and sets 
+            // player indicator as null
+            this.location.colIdx = player;
+            this.location.rowIdx = colIdx;
+            this.player = null;
         }
     }
 

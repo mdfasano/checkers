@@ -1,40 +1,40 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 body {
-    background-color: darkslategrey;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
+  background-color: darkslategrey;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
 }
 #playing-area {
-    display: grid;
-    /* grid-area: "a b b" */
+  display: grid;
+  /* grid-area: "a b b" */
 }
 #game-board {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    margin-top: 25vmin;
-    margin-left: 5vmin;
-    margin-right: 5vmin;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  margin-top: 25vmin;
+  margin-left: 5vmin;
+  margin-right: 5vmin;
 }
-#game-board>div {
-    border-color: rgb(0, 0, 0);
-    border-style: groove;
-    padding-top: 95%;
-    min-width: 30px;
+#game-board > div {
+  border-color: rgb(0, 0, 0);
+  border-style: groove;
+  padding-top: 95%;
+  min-width: 30px;
 }
-#game-board>div:hover {
-    border-radius: 5px;
-    border-color: whitesmoke;
+#game-board > div:hover {
+  border-radius: 5px;
+  border-color: whitesmoke;
 }
 .color1-tile {
-    background-color: dimgray;
+  background-color: dimgray;
 }
 .color2-tile {
-    background-color: rgba(82, 9, 219, 0.61);
+  background-color: rgba(82, 9, 219, 0.61);
 }
