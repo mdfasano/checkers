@@ -40,12 +40,11 @@ test ("should have index: [0,0] && player: 1", () => {
 
 // too few inputs
 test ("player and location set to null if no params", () => {
-    let testPiece = new CheckersPiece ();
-    expect (testPiece.player).toBeNull;
-    expect (testPiece.location).toBeNull;
+    const testObj = testHelper();
+    expect (testObj.testPiece).toMatchObject(testObj.testAgainst);
 });
 test ("player value is 1 if passed only '1', location set as 'null'", () => {
-    let testObj = testHelper (1);
+    const testObj = testHelper (1);
     expect (testObj.testPiece).toMatchObject(testObj.testAgainst);
 });
 test ("set player to undefined if only 2 parameters", () => {
@@ -101,6 +100,11 @@ function testHelper () {
     } else if (arguments.length === 1) {
         testObj.testAgainst = {
             player: arguments[0],
+            location: null
+        }
+    } else if (arguments.length === 0) {
+        testObj.testAgainst = {
+            player: null,
             location: null
         }
     } else {

@@ -28,7 +28,6 @@ class CheckersPiece {
             this.player = null;
         }
     }
-    
 
 /* ---- stored variables --- */
     // represents the tile in game board at which this object exists 
@@ -38,6 +37,11 @@ class CheckersPiece {
         1: "../images/checkerspiece.png",
         "-1": "../images/checkerspiece.png" 
     }
+
+/* ---- class functions ----- */
+
+    //movement function
+
     //render function
 }
 
