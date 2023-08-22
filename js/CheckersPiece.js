@@ -28,6 +28,7 @@ class CheckersPiece {
             this.player = null;
         }
     }
+    
 
 /* ---- stored variables --- */
     // represents the tile in game board at which this object exists 
