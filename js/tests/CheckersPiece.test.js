@@ -74,6 +74,20 @@ test ("passing in strings instead of integers", () => {
     expect (testObj.testPiece).toMatchObject(testObj.testAgainst);    
 })
 
+
+/* ----- testing movement ---- */
+
+test ("calling moveTo(2, 3)", () => {
+    const testPiece = new CheckersPiece (1, 0, 0);
+    testPiece.moveTo(2, 3);
+    expect (testPiece.location).toMatchObject ({
+        colIdx: 2,
+        rowIdx: 3
+    })
+})
+
+
+
 // for testing how tests work
 test("empty test", () => {
     expect(null).toBeNull;
@@ -100,12 +114,18 @@ function testHelper () {
     } else if (arguments.length === 1) {
         testObj.testAgainst = {
             player: arguments[0],
-            location: null
+            location: {
+                colIdx: null,
+                rowIdx: null
+            }
         }
     } else if (arguments.length === 0) {
         testObj.testAgainst = {
             player: null,
-            location: null
+            location: {
+                colIdx: null,
+                rowIdx: null
+            }
         }
     } else {
         testObj.testAgainst = {

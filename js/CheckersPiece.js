@@ -2,29 +2,27 @@
 class CheckersPiece {
     // takes a player signifier and 
     // col/row indeced to represent location on game board
-    constructor (player, colIdx, rowIdx) {
+    constructor () {
         if (arguments.length >= 3) {
             // expected case
-            this.player = player;
-            this.location.colIdx = colIdx;
-            this.location.rowIdx = rowIdx;
+            this.player = arguments[0];
+            this.setLocation (arguments[1], arguments[2]);
         } else if (arguments)
         if (arguments.length === 0) {
             // if no parameters passed, a new object is created with both
             // location and player as null
             this.player = null;
-            this.location = null;
+            this.setLocation (null, null);
         } else if (arguments.length === 1) {
             // when one parameter is passed, it is treated as the 
             // player indicator. The location is set to null
-            this.player = player;
-            this.location = null;
+            this.player = arguments[0];
+            this.setLocation (null, null)
         } else if (arguments.length === 2) {
             // when two parameters are passed, assumes that they represent
             // col and row index (in that order) and sets 
             // player indicator as null
-            this.location.colIdx = player;
-            this.location.rowIdx = colIdx;
+            this.setLocation (arguments[0], arguments[1]);
             this.player = null;
         }
     }
@@ -38,11 +36,19 @@ class CheckersPiece {
         "-1": "../images/checkerspiece.png" 
     }
 
-/* ---- class functions ----- */
+/* ---- public class functions ----- */
 
     //movement function
-
+    moveTo (colIdx, rowIdx) {
+        this.setLocation (colIdx, rowIdx);
+    }
     //render function
+
+    /* ----- private helper functions -----*/
+    setLocation (colIdx, rowIdx) {
+        this.location.colIdx = colIdx;
+        this.location.rowIdx = rowIdx;
+    }
 }
 
 class KingPiece extends CheckersPiece {
