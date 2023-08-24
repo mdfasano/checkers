@@ -11,11 +11,10 @@ body {
 }
 #playing-area {
   display: grid;
-  /* grid-area: "a b b" */
 }
 #game-board {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(8, 100px);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   margin-top: 25vmin;
@@ -23,14 +22,30 @@ body {
   margin-right: 5vmin;
 }
 #game-board > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-color: rgb(0, 0, 0);
   border-style: groove;
-  padding-top: 95%;
-  min-width: 30px;
+  /* padding-top: 95%; */
+  width: 100px;
+  height: 100px;
 }
 #game-board > div:hover {
   border-radius: 5px;
   border-color: whitesmoke;
+}
+.color1-tile > .checkers-piece {
+  object-fit: cover;
+  width: 95%;
+  position: relative;
+  max-height: 95%;;
+  overflow: hidden;
+}
+.checkers-piece:hover {
+  width: 90%;
+  height: 90%;
+  box-shadow: 0 0 10px rgba(4, 4, 5, 0.61);
 }
 .color1-tile {
   background-color: dimgray;

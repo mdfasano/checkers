@@ -1,3 +1,5 @@
+import { CheckersPiece } from "./CheckersPiece.js";
+
 class CheckersGame {
     constructor (boardElement, messageElement) {
         this.boardElement = boardElement;
@@ -9,7 +11,7 @@ class CheckersGame {
 
 
             console.log('raw index: ' + idx);
-            console.log(BoardTile.getLocationIdx(idx))
+            console.log(BoardTile.getLocIdx(idx))
         })
     }
 
@@ -26,43 +28,62 @@ class CheckersGame {
         this.turn = 1;
         this.winner = null;
         this.setBoard();
-
+        this.render();
     }
 
     setBoard () {
+        console.log('setting board')
         this.tileElements.forEach((tile, index) => {
             const thisTile = new BoardTile(tile, index);
             if (thisTile.tileColor === 'light') {
-                if (thisTile.location.rowIdx < 3) {
-                    // make p1 playing piece here
-                } else if (thisTile.location.rowIdx > 4) {
-                    //make p2 playing piece here
+                console.log(thisTile )
+                if (thisTile.loc.rowIdx < 3) {
+                    new CheckersPiece (1, thisTile)
+                } else if (thisTile.loc.rowIdx > 4) {
+                    new CheckersPiece (-1, thisTile)
                 }
             }
         });
     }
+    render () {
+        renderButtons ();
+        renderMessage ();
+        renderBoard ();
+    }
+    renderButtons () {
+
+    }
+    renderMessage () {
+
+    }
+    renderBoard () {
+        
+    }
 }
+
 
 class BoardTile {
     constructor (domElement, index) {
+        console.log('making tile');
         this.domElement = domElement;
         this.value = null;
-        this.location = BoardTile.getLocationIdx(index)
-        this.tileColor = this.getTileColor(location);
+        this.loc = BoardTile.getLocIdx(index)
+        this.tileColor = this.getTileColor(this.loc);
+        console.log(this.tileColor)
     }
 
     // converts an index in a 1-D array into 2-D array format
     // returns an object holding the column and row index
-    static getLocationIdx (rawIdx) {
+    static getLocIdx (rawIdx) {
         return {
             colIdx: rawIdx%CheckersGame.BOARD_SIZE,
             rowIdx: Math.floor(rawIdx/CheckersGame.BOARD_SIZE)
         }
     }
     // players can only move here if 
-    getTileColor (location) {
-        if ((location.colIdx + location.rowIdx) % 2) return 'light';
-        else return 'dark';
+    getTileColor (loc) {
+        if ((loc.colIdx + loc.rowIdx) % 2) return 'dark';
+        else  return 'light';
     }
 }
 
