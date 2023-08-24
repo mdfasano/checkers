@@ -77,7 +77,4 @@ class KingPiece extends CheckersPiece {
 
 
 
-module.exports = {
-    CheckersPiece,
-    KingPiece
-}
+export { CheckersPiece, KingPiece };
