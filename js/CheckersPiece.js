@@ -30,6 +30,9 @@ class CheckersPiece {
 /* ---- stored variables --- */
     // represents the tile in game board at which this object exists 
     location = {};
+
+    // array holding locations that can be accessed from current location
+    movableLocations = [];
     // uses the p1/p2 values as keys for images
     imgLookup = {
         1: "../images/checkerspiece.png",
@@ -38,9 +41,15 @@ class CheckersPiece {
 
 /* ---- public class functions ----- */
 
-    //movement function
+    // movement function
     moveTo (colIdx, rowIdx) {
         this.setLocation (colIdx, rowIdx);
+    }
+    // only called by class
+    whereCanIMove () {
+        this.movableLocations = []; // clear array
+        this.movableLocations.push (this.location.colIdx + 1, this.location.rowIdx + this.player);
+        this.movableLocations.push (this.location.colIdx - 1, this.location.rowIdx + this.player);
     }
     //render function
 
@@ -50,6 +59,8 @@ class CheckersPiece {
         this.location.rowIdx = rowIdx;
     }
 }
+
+
 
 class KingPiece extends CheckersPiece {
     //constructor:
