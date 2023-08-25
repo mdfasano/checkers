@@ -5,101 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
     <script type="module" src="js/CheckersGame.js"></script>
-    <script type="module" src="js/CheckersPiece.js"></script>
     <script defer type="module" src="js/main.js"></script>
     <title>Checkers</title>
   </head>
   <body>
-    <div id="message-area">messages</div>
-    <div id="button-area">
-      <button id="play-again">Play Again?</button>
-      <button id="resign">Resign</button>
-    </div>
     <section id="playing-area">
+      <div id="button-area">
+        <button id="play-again">Play Again?</button>
+        <button id="resign">Resign</button>
+      </div>
+      <div id="message-area"><h2>messages</h2></div>
       <section id="game-board">
         <!-- row 0 (top) -->
-        <div class="color1-tile" id="c0r0"></div>
-        <div class="color2-tile" id="c1r0"></div>
-        <div class="color1-tile" id="c2r0"></div>
-        <div class="color2-tile" id="c3r0"></div>
-        <div class="color1-tile" id="c4r0"></div>
-        <div class="color2-tile" id="c5r0"></div>
-        <div class="color1-tile" id="c6r0"></div>
-        <div class="color2-tile" id="c7r0"></div>
+        <div class="color1-tile" id="c0r0"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c1r0"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c2r0"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c3r0"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c4r0"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c5r0"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c6r0"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c7r0"><img class="checkers-piece"></div>
 
         <!-- row 1 -->
-        <div class="color2-tile" id="c0r1"></div>
-        <div class="color1-tile" id="c1r1"></div>
-        <div class="color2-tile" id="c2r1"></div>
-        <div class="color1-tile" id="c3r1"></div>
-        <div class="color2-tile" id="c4r1"></div>
-        <div class="color1-tile" id="c5r1"></div>
-        <div class="color2-tile" id="c6r1"></div>
-        <div class="color1-tile" id="c7r1"></div>
+        <div class="color2-tile" id="c0r1"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c1r1"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c2r1"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c3r1"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c4r1"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c5r1"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c6r1"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c7r1"><img class="checkers-piece"></div>
 
         <!-- row 2 -->
-        <div class="color1-tile" id="c0r2"></div>
-        <div class="color2-tile" id="c1r2"></div>
-        <div class="color1-tile" id="c2r2"></div>
-        <div class="color2-tile" id="c3r2"></div>
-        <div class="color1-tile" id="c4r2"></div>
-        <div class="color2-tile" id="c5r2"></div>
-        <div class="color1-tile" id="c6r2"></div>
-        <div class="color2-tile" id="c7r2"></div>
+        <div class="color1-tile" id="c0r2"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c1r2"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c2r2"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c3r2"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c4r2"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c5r2"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c6r2"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c7r2"><img class="checkers-piece"></div>
 
         <!-- row 3 -->
-        <div class="color2-tile" id="c0r3"></div>
-        <div class="color1-tile" id="c1r3"></div>
-        <div class="color2-tile" id="c2r3"></div>
-        <div class="color1-tile" id="c3r3"></div>
-        <div class="color2-tile" id="c4r3"></div>
-        <div class="color1-tile" id="c5r3"></div>
-        <div class="color2-tile" id="c6r3"></div>
-        <div class="color1-tile" id="c7r3"></div>
+        <div class="color2-tile" id="c0r3"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c1r3"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c2r3"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c3r3"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c4r3"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c5r3"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c6r3"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c7r3"><img class="checkers-piece"></div>
 
         <!-- row 4 -->
-        <div class="color1-tile" id="c0r4"></div>
-        <div class="color2-tile" id="c1r4"></div>
-        <div class="color1-tile" id="c2r4"></div>
-        <div class="color2-tile" id="c3r4"></div>
-        <div class="color1-tile" id="c4r4"></div>
-        <div class="color2-tile" id="c5r4"></div>
-        <div class="color1-tile" id="c6r4"></div>
-        <div class="color2-tile" id="c7r4"></div>
+        <div class="color1-tile" id="c0r4"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c1r4"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c2r4"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c3r4"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c4r4"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c5r4"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c6r4"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c7r4"><img class="checkers-piece"></div>
 
         <!-- row 5 -->
-        <div class="color2-tile" id="c0r5"></div>
-        <div class="color1-tile" id="c1r5"></div>
-        <div class="color2-tile" id="c2r5"></div>
-        <div class="color1-tile" id="c3r5"></div>
-        <div class="color2-tile" id="c4r5"></div>
-        <div class="color1-tile" id="c5r5"></div>
-        <div class="color2-tile" id="c6r5"></div>
-        <div class="color1-tile" id="c7r5"></div>
+        <div class="color2-tile" id="c0r5"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c1r5"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c2r5"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c3r5"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c4r5"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c5r5"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c6r5"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c7r5"><img class="checkers-piece"></div>
 
         <!-- row 6 -->
-        <div class="color1-tile" id="c0r6"></div>
-        <div class="color2-tile" id="c1r6"></div>
-        <div class="color1-tile" id="c2r6"></div>
-        <div class="color2-tile" id="c3r6"></div>
-        <div class="color1-tile" id="c4r6"></div>
-        <div class="color2-tile" id="c5r6"></div>
-        <div class="color1-tile" id="c6r6"></div>
-        <div class="color2-tile" id="c7r6"></div>
+        <div class="color1-tile" id="c0r6"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c1r6"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c2r6"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c3r6"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c4r6"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c5r6"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c6r6"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c7r6"><img class="checkers-piece"></div>
 
         <!-- row 7 (bottom) -->
-        <div class="color2-tile" id="c0r7"></div>
-        <div class="color1-tile" id="c1r7"></div>
-        <div class="color2-tile" id="c2r7"></div>
-        <div class="color1-tile" id="c3r7"></div>
-        <div class="color2-tile" id="c4r7"></div>
-        <div class="color1-tile" id="c5r7"></div>
-        <div class="color2-tile" id="c6r7"></div>
-        <div class="color1-tile" id="c7r7"></div>
+        <div class="color2-tile" id="c0r7"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c1r7"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c2r7"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c3r7"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c4r7"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c5r7"><img class="checkers-piece"></div>
+        <div class="color2-tile" id="c6r7"><img class="checkers-piece"></div>
+        <div class="color1-tile" id="c7r7"><img class="checkers-piece"></div>
       </section>
       <section id="graveyards">
-        <div id="graveyard1"></div>
-        <div id="graveyard2"></div>
+        <div id="graveyard1"><img class="checkers-piece"></div>
+        <div id="graveyard2"><img class="checkers-piece"></div>
       </section>
     </section>
   </body>

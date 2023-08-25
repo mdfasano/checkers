@@ -9,6 +9,13 @@ body {
   height: 100vh;
   margin: 0;
 }
+#message-area, #button-area {
+  position: absolute;
+  align-items: center;
+  margin-left: 40vmin;
+  padding-left: 5vmin;
+  justify-content: center;
+}
 #playing-area {
   display: grid;
 }
@@ -17,7 +24,7 @@ body {
   grid-template-columns: repeat(8, 100px);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  margin-top: 25vmin;
+  margin-top: 5vmin;
   margin-left: 5vmin;
   margin-right: 5vmin;
 }
@@ -31,10 +38,10 @@ body {
   width: 100px;
   height: 100px;
 }
-#game-board > div:hover {
+/* #game-board > div:hover {
   border-radius: 5px;
   border-color: whitesmoke;
-}
+} */
 .color1-tile > .checkers-piece {
   object-fit: cover;
   width: 95%;

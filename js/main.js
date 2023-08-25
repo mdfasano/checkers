@@ -1,7 +1,8 @@
 /* ---- import classes ---- */
 import { CheckersGame } from "./CheckersGame.js";
-import { CheckersPiece } from "./CheckersPiece.js";
-import { KingPiece  } from "./CheckersPiece.js";
+import { CheckersPiece } from "./CheckersGame.js";
+import { KingPiece  } from "./CheckersGame.js";
+import { BoardTile } from "./CheckersGame.js";
 
 /* ---- state variables ---- */
 let game;
