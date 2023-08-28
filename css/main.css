@@ -51,12 +51,15 @@ div.moveable:hover {
   border-color: rgb(255, 2, 2);
 }
 .color1-tile {
-  background-color: dimgray;
+  background-color: whitesmoke;
 }
 .color2-tile {
   background-color: rgba(82, 9, 219, 0.61);
 }
 
 /* classes to add when a piece gets moved to a square */
-.team-black { background-image: url(../images/checkerspiece.png); }
+.team-black { background-image: url(../images/checkerspiecelight.jpg); }
 .team-white { background-image: url(../images/checkerspiecedark.jpg); }
+
+.team-black.king { background-image: url(../images/checkerspiecedarkking.jpg); }
+.team-white.king { background-image: url(../images/checkerspiecelightking.jpg); }
