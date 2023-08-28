@@ -10,14 +10,12 @@ body {
   margin: 0;
 }
 #message-area, #button-area {
-  position: absolute;
+  position: relative;
   align-items: center;
+  margin-top: 2vmin;
   margin-left: 40vmin;
   padding-left: 5vmin;
   justify-content: center;
-}
-#playing-area {
-  display: grid;
 }
 #game-board {
   display: grid;
@@ -34,25 +32,23 @@ body {
   align-items: center;
   border-color: rgb(0, 0, 0);
   border-style: groove;
-  /* padding-top: 95%; */
   width: 100px;
   height: 100px;
 }
-/* #game-board > div:hover {
+div.moveable:hover {
   border-radius: 5px;
   border-color: whitesmoke;
-} */
-.color1-tile > .checkers-piece {
-  object-fit: cover;
-  width: 95%;
-  position: relative;
-  max-height: 95%;;
-  overflow: hidden;
+} 
+.team-black, .team-white {
+  background-size: 95%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-.checkers-piece:hover {
-  width: 90%;
-  height: 90%;
-  box-shadow: 0 0 10px rgba(4, 4, 5, 0.61);
+
+.team-black:hover, .team-white:hover {
+  border-radius: 10px;
+  background-size: 86%;
+  border-color: rgb(255, 2, 2);
 }
 .color1-tile {
   background-color: dimgray;
@@ -60,3 +56,7 @@ body {
 .color2-tile {
   background-color: rgba(82, 9, 219, 0.61);
 }
+
+/* classes to add when a piece gets moved to a square */
+.team-black { background-image: url(../images/checkerspiece.png); }
+.team-white { background-image: url(../images/checkerspiecedark.jpg); }
