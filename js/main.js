@@ -4,15 +4,26 @@ class CheckersGame {
         this.boardElement = boardElement;
         this.messageElement = messageElement;
         this.buttonElement = buttonElement;
-        let tileElements = [...boardElement.querySelectorAll('div')];
+        this.tileElements = [...boardElement.querySelectorAll('div')];
 
         // we can access individual tile divs with tileObjects[index].domEl
         this.tileObjects = [];
-        tileElements.forEach((domEl, index) => {
+        this.tileElements.forEach((domEl, index) => {
             const tileObj = {};
             tileObj.domEl = domEl;
             tileObj.jsEl = new BoardTile(index);
             this.tileObjects.push(tileObj);
+        });
+        this.boardElement.addEventListener('click', (evt) => {
+            let idx = this.tileElements.indexOf(evt.target);
+            console.log('clicked the board')
+            const moveOptions = this.tileObjects[idx].jsEl.checkMoveOptions (this.turn); // return array of index vals
+            moveOptions.forEach(idx => {
+                console.log(idx);
+                const tileOwner = this.checkForPiece(idx);
+console.log(tileOwner)
+                return idx;
+            });
         });
 
         this.render();
@@ -33,9 +44,11 @@ class CheckersGame {
         this.render();
     }
 
-    // passed the index of the piece trying to move
-    static getMoveChoice (index) {
-        console.log(index)
+    // return true iff has a piece AND that is an enemy
+    checkForPiece (idx) {
+        const piece = this.tileObjects[idx].jsEl.tileInfo.playingPiece;
+        if (piece === null) return 0;
+        else return piece.player;
     }
     render () {
         this.renderButtons ();
@@ -58,28 +71,34 @@ class CheckersGame {
 
 class BoardTile {
     constructor (index) {
-        this.loc = BoardTile.getLocIdx(index)
-        this.tileColor = BoardTile.getTileColor(this.loc);
-        if (this.tileColor === 'dark') this.playingPiece = null;
+        this.tileInfo.index = index;
+        this.tileInfo.coords = BoardTile.getLocIdx(index);
+        this.tileInfo.color = this.getTileColor(this.tileInfo.index);
+        if (this.tileInfo.color === 'dark') this.tileInfo.playingPiece = null;
         else {
-            if (this.loc.rowIdx < 3) {
-                this.playingPiece = new CheckersPiece(1) //1 to represent dark color pieces;
-            } else if (this.loc.rowIdx > 4) {
-                this.playingPiece = new CheckersPiece (-1) // -1 to represent light color pieces;
+            if (this.tileInfo.coords.rowIdx < 3) {
+                this.tileInfo.playingPiece = new CheckersPiece(1) //1 to represent dark color pieces;
+            } else if (this.tileInfo.coords.rowIdx > 4) {
+                this.tileInfo.playingPiece = new CheckersPiece (-1) // -1 to represent light color pieces;
             }
         }
     }
 
     /* -- stored variables -- */
-
+    tileInfo = {
+        index: null,
+        coords: {},
+        color: null,
+        playingPiece: null
+    };
 
     /* --- render function --- */
 
     renderTile (domEl) {
         // takes in the domEl this will be rendering on, and passes
         // it to the playing piece object
-        if (this.playingPiece != null) {
-            this.playingPiece.renderPiece(domEl);
+        if (this.tileInfo.playingPiece != null) {
+            this.tileInfo.playingPiece.renderPiece(domEl);
         }
 
     }
@@ -87,15 +106,40 @@ class BoardTile {
     // returns an object holding the column and row index
     static getLocIdx (index) {
         return {
-            oneDIdx: index,
             colIdx: index%CheckersGame.BOARD_SIZE,
             rowIdx: Math.floor(index/CheckersGame.BOARD_SIZE)
         }
     }
-    // players can only move here if 
-    static getTileColor (loc) {
-        if ((loc.colIdx + loc.rowIdx) % 2) return 'dark';
+    // players can only move here if tile is light colored
+    getTileColor (index) {
+        if ((this.tileInfo.coords.colIdx + this.tileInfo.coords.rowIdx) % 2) return 'dark';
         else  return 'light';
+    }
+    // returns true iff given index is in bounds 
+    static isInBounds (rawIdx) {
+        const loc = BoardTile.getLocIdx(rawIdx);
+        console.log(loc + ' checking isingbounds')
+        if (
+            loc.colIdx >= 0 && loc.colIdx < CheckersGame.BOARD_SIZE &&
+            loc.rowIdx >= 0 && loc.rowIdx < CheckersGame.BOARD_SIZE
+        ) return true;
+        else return false;
+    }
+    checkMoveOptions (turn) {
+        let viableLocations = [];
+        if (this.tileInfo.color === 'light') { // return if invalid tile
+            if (this.tileInfo.playingPiece) { // only call function if tile contains a playing piece
+                console.log ('inside tile')
+                let incrementors = this.tileInfo.playingPiece.whereCanIMove(turn);
+                viableLocations = incrementors.map(incr => {
+                    incr += this.tileInfo.index;
+                    if (BoardTile.isInBounds(incr)) {
+                        return incr;
+                    };
+                });
+            }
+        }
+        return viableLocations;
     }
 }
 
@@ -121,6 +165,9 @@ class CheckersPiece {
     }
 
 /* ---- public class functions ----- */
+    kingMe () {
+        return new KingPiece (this.player);
+    }
 
     movePiece (tile) {
         console.log(tile);
@@ -131,12 +178,16 @@ class CheckersPiece {
     moveTo (colIdx, rowIdx) {
         this.setLocation (colIdx, rowIdx);
     }
-    // only called by class
-    whereCanIMove () {
-        this.movableLocations = []; // clear array
-        this.movableLocations.push (this.loc.colIdx + 1, this.loc.rowIdx + this.player);
-        this.movableLocations.push (this.loc.colIdx - 1, this.loc.rowIdx + this.player);
-    }
+
+    whereCanIMove (turn) {
+        const incrementors = []
+        const base = (CheckersGame.BOARD_SIZE * this.player);
+        if (turn === this.player) {
+            incrementors.push(base + 1);
+            incrementors.push(base - 1);
+        }
+        return incrementors;
+    }        
     //render function
     renderPiece (domEl) {
         console.log(CheckersPiece.classLookup[this.player])
@@ -154,15 +205,17 @@ class CheckersPiece {
 }
 
 class KingPiece extends CheckersPiece {
-    //constructor:
-
-    // special img lookup to signify upgrade
-    imgLookup = {
-        1: "",
-        "-1": ""
+    constructor (player) {
+        super(player);
     }
 
     // special movement function
+
+    // special render function 
+    renderPiece (domEl) {
+        super.renderPiece(domEl);
+        domEl.classList.add('king');
+    }
 }
 
 /* ---- state variables ---- */
