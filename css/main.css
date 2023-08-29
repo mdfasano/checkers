@@ -35,9 +35,10 @@ body {
   width: 100px;
   height: 100px;
 }
-div.moveable:hover {
-  border-radius: 5px;
-  border-color: whitesmoke;
+div.moveable {
+  border-radius: 10px;
+  border-color: rgb(177, 189, 12);
+  background-color:rgb(197, 194, 8)
 } 
 .team-black, .team-white {
   background-size: 95%;

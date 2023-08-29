@@ -14,17 +14,7 @@ class CheckersGame {
             tileObj.jsEl = new BoardTile(index);
             this.tileObjects.push(tileObj);
         });
-        this.boardElement.addEventListener('click', (evt) => {
-            let idx = this.tileElements.indexOf(evt.target);
-            console.log('clicked the board')
-            const moveOptions = this.tileObjects[idx].jsEl.checkMoveOptions (this.turn); // return array of index vals
-            moveOptions.forEach(idx => {
-                console.log(idx);
-                const tileOwner = this.checkForPiece(idx);
-console.log(tileOwner)
-                return idx;
-            });
-        });
+        this.boardElement.addEventListener('click', (evt) => this.handleClick(evt));
 
         this.render();
     }
@@ -39,9 +29,22 @@ console.log(tileOwner)
     /* --- funtions --- */
 
     play () {
-        this.turn = 1;
+        this.turn = -1;
         this.winner = null;
         this.render();
+    }
+
+    handleClick (evt) {
+        this.clearMoveable();
+        let idx = this.tileElements.indexOf(evt.target);
+        console.log('clicked the board')
+        const moveOptions = this.tileObjects[idx].jsEl.checkMoveOptions (this.turn); // return array of index vals
+        moveOptions.forEach(idx => {
+            console.log(idx);
+            const tileOwner = this.checkForPiece(idx);
+            this.addMoveable (this.tileElements[idx])
+            return idx;
+        });
     }
 
     // return true iff has a piece AND that is an enemy
@@ -49,6 +52,14 @@ console.log(tileOwner)
         const piece = this.tileObjects[idx].jsEl.tileInfo.playingPiece;
         if (piece === null) return 0;
         else return piece.player;
+    }
+    addMoveable (domEl) {
+        domEl.classList.add('moveable');
+    }
+    clearMoveable () {
+        this.tileElements.forEach((el) => {
+            el.classList.remove('moveable');
+        })
     }
     render () {
         this.renderButtons ();
@@ -116,13 +127,14 @@ class BoardTile {
         else  return 'light';
     }
     // returns true iff given index is in bounds 
-    static isInBounds (rawIdx) {
+    isInBounds (rawIdx) {
         const loc = BoardTile.getLocIdx(rawIdx);
+        const rowCompare = loc.rowIdx - this.tileInfo.coords.rowIdx;
         console.log(loc + ' checking isingbounds')
         if (
-            loc.colIdx >= 0 && loc.colIdx < CheckersGame.BOARD_SIZE &&
-            loc.rowIdx >= 0 && loc.rowIdx < CheckersGame.BOARD_SIZE
-        ) return true;
+            loc.colIdx >= 0 && loc.colIdx < CheckersGame.BOARD_SIZE &&  // col# inside playing grid
+            loc.rowIdx >= 0 && loc.rowIdx < CheckersGame.BOARD_SIZE     // row# inside playing grid
+        ) if (rowCompare*rowCompare === 1) return true;
         else return false;
     }
     checkMoveOptions (turn) {
@@ -131,12 +143,8 @@ class BoardTile {
             if (this.tileInfo.playingPiece) { // only call function if tile contains a playing piece
                 console.log ('inside tile')
                 let incrementors = this.tileInfo.playingPiece.whereCanIMove(turn);
-                viableLocations = incrementors.map(incr => {
-                    incr += this.tileInfo.index;
-                    if (BoardTile.isInBounds(incr)) {
-                        return incr;
-                    };
-                });
+                viableLocations = incrementors.map(incr => incr += this.tileInfo.index);
+                viableLocations = viableLocations.filter(tileIdx => this.isInBounds(tileIdx) ? true : false);
             }
         }
         return viableLocations;
