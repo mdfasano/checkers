@@ -27,7 +27,7 @@ class CheckersGame {
     winner;
 
     /* --- funtions --- */
-
+ 
     play () {
         this.turn = -1;
         this.winner = null;
@@ -35,6 +35,8 @@ class CheckersGame {
     }
 
     handleClick (evt) {
+        // if target contains a piece already, check movement options
+        // else if target can be moved to, move current piece there
         this.clearMoveable();
         let idx = this.tileElements.indexOf(evt.target);
         console.log('clicked the board')
