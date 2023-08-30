@@ -56,8 +56,9 @@ class CheckersGame {
             this.clearMoveable();
             // if the player clicked on their own piece... 
             if (clickedTile.playingPiece.owner === this.turn) {
-                this.prepForMove(idx, clickedTile.playingPiece); // determine where it can move
                 this.activeTileIdx = idx;
+                this.prepForMove(idx, clickedTile.playingPiece); // determine where it can move
+
             }
             //if target can be moved to, move current piece there
         } else if (clickedTile.canMoveHere === true) {
@@ -87,10 +88,16 @@ class CheckersGame {
         let moveOptions = piece.whereCanIMove(idxColRow) // ask the playing piece where it can move
         moveOptions = moveOptions.filter(this.checkIfInBounds) // remove options outside gameboard
         // check for friendly tiles at [options]
-        //      -> delete option
+        moveOptions = moveOptions.filter((idxColRow) => {
+            // filter out options that are blocked by same team pieces
+            if (this.checkForFriendly(idxColRow)) return true
+            else return false
+        });
         // check for enemy tiles at [options]
+        moveOptions = moveOptions.map ((idxColRow) => this.checkForEnemy(idxColRow));
         //      -> generate new option by extrapolating rule
         //      ...later
+        moveOptions = moveOptions.filter ((el) => el === null ? false : true);
         // add movable to tiles at [options]
         moveOptions.forEach((idxColRow) => {
             this.addMoveable(idxColRow);
@@ -100,10 +107,10 @@ class CheckersGame {
         const tempPiece = this.tileObjects[this.activeTileIdx].playingPiece;
         tile.playingPiece = tempPiece;
         this.tileObjects[this.activeTileIdx].playingPiece = null;
-console.log(this.tileObjects[this.activeTileIdx])
         this.clearMoveable();
         this.turn *= -1;
     }
+    // returns true iff given index is a valid location on gameboard
     checkIfInBounds (idxColRow) {
         if (idxColRow.colIdx >= 0 &&
             idxColRow.colIdx < CheckersGame.BOARD_SIZE &&
@@ -112,17 +119,41 @@ console.log(this.tileObjects[this.activeTileIdx])
             ) return true;
             else return false;
     }
-
+    checkForFriendly (idxColRow) {
+        const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
+        return (tile.playingPiece && tile.playingPiece.owner === this.turn) ? false : true;
+    }
+    checkForEnemy (idxColRow) {
+        const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
+        if (tile.playingPiece && tile.playingPiece.owner !== this.turn) {
+            // if the tile is an enemy
+            const newCoords = CheckersPiece.whereAmIAfterCapture(
+                // get the tile that we would end up at if a capture happened here
+                CheckersGame.getColRowFromIndex(this.activeTileIdx), // pass coords of 'active' tile
+                idxColRow   // and coords of adjacent enemy potentially being captured
+            );
+            if (
+                this.checkIfInBounds(newCoords) &&
+                this.checkForFriendly(newCoords) &&
+                this.checkForEnemy(newCoords)
+            ) return newCoords;
+            //check if next tile in path is empty
+            else return null;
+        } else return idxColRow;
+    }
     // return true iff has a piece AND that is an enemy
     checkForPiece (idx) {
         const piece = this.tileObjects[idx].playingPiece;
-        if (piece === null) return 0;
+        if (piece === null) return null;
         else return piece.player;
     }
+    // changes the 'moveable' bool to true for the 
+    // tile at given index
     addMoveable (idxColRow) {
         const idx = CheckersGame.getIndexFromColRow(idxColRow);
         this.tileObjects[idx].canMoveHere = true;
     }
+    // sets ALL 'movable' booleans to false
     clearMoveable () {
         this.tileObjects.forEach((tile) => {
             tile.canMoveHere = false;
@@ -223,8 +254,8 @@ class BoardTile {
 // a class for all playing pieces used in a checkers game
 class CheckersPiece {
     // takes a number (1 or -1) to signify which players turn it is
-    constructor (turn) {
-        this.owner = turn;
+    constructor (owner) {
+        this.owner = owner;
     }
 
     // uses the p1/p2 values as keys for classes 
@@ -249,6 +280,16 @@ class CheckersPiece {
         moveOptions.push(this.makeLocationObj(col + 1, row));
         moveOptions.push(this.makeLocationObj(col - 1, row));
         return moveOptions;
+    }
+    // returns the coordinates a piece would be at if it initiated a 
+    // capture from the positions described by params
+    static whereAmIAfterCapture (startingCoords, capturedPieceCoords) {
+        const newColMod = capturedPieceCoords.colIdx - startingCoords.colIdx;
+        const newRowMod = capturedPieceCoords.rowIdx - startingCoords.rowIdx;
+        return {
+            colIdx: capturedPieceCoords.colIdx + newColMod,
+            rowIdx: capturedPieceCoords.rowIdx + newRowMod
+        }
     }
     // packs col and row numbers into an object
     // with appropriate key names
