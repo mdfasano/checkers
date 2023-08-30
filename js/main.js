@@ -62,8 +62,11 @@ class CheckersGame {
             }
             //if target can be moved to, move current piece there
         } else if (clickedTile.canMoveHere === true) {
-            this.makeMove(clickedTile)
-            }
+            this.makeMove(clickedTile);
+            if (this.checkIfKing(clickedTile.tileInfo.coords.rowIdx)) {
+                clickedTile.playingPiece = clickedTile.playingPiece.kingMe();
+            };
+        }
 
         else this.clearMoveable()
 
@@ -148,6 +151,10 @@ class CheckersGame {
             }
             else return null;
         } else return idxColRow;
+    }
+    checkIfKing (rowIdx) {
+        if (rowIdx === 0 || rowIdx === CheckersGame.BOARD_SIZE-1) return true
+        else return false;
     }
     // changes the 'moveable' bool to true for the 
     // tile at given index
@@ -270,9 +277,9 @@ class CheckersPiece {
         "-1": "team-white"
     }
 
-/* ---- public class functions ----- */
+/* ---- class functions ----- */
     kingMe () {
-        return new KingPiece (this.player);
+        return new KingPiece (this.owner);
     }
 
     // takes a location object holding col and row values
@@ -322,7 +329,18 @@ class KingPiece extends CheckersPiece {
     }
 
     // special movement function
+    whereCanIMove (idxColRow) {
+        const moveOptions = []
+        const col = idxColRow.colIdx;
+        const row1 = idxColRow.rowIdx + this.owner;
+        const row2 = idxColRow.rowIdx - this.owner;
 
+        moveOptions.push(this.makeLocationObj(col + 1, row1));
+        moveOptions.push(this.makeLocationObj(col - 1, row1));
+        moveOptions.push(this.makeLocationObj(col + 1, row2));
+        moveOptions.push(this.makeLocationObj(col - 1, row2));
+        return moveOptions;
+    }
     // special render function 
     renderPiece (domEl) {
         super.renderPiece(domEl);
