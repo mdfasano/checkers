@@ -30,7 +30,7 @@ class CheckersGame {
     turn; // 1 or -1
     winner; // 1, -1, T for tie. null while game being played
     activeTileIdx = null;
-
+    tilesToBeCaptured = {}
     /* --- funtions --- */
     play () {
         this.turn = 1; // black goes first
@@ -107,7 +107,11 @@ class CheckersGame {
         const tempPiece = this.tileObjects[this.activeTileIdx].playingPiece;
         tile.playingPiece = tempPiece;
         this.tileObjects[this.activeTileIdx].playingPiece = null;
+        if (this.tilesToBeCaptured[tile.tileInfo.index]) { // if we are making a capture delete captured piece
+            this.tilesToBeCaptured[tile.tileInfo.index].playingPiece = null;
+        }
         this.clearMoveable();
+        this.clearToBeCaptured();
         this.turn *= -1;
     }
     // returns true iff given index is a valid location on gameboard
@@ -132,20 +136,18 @@ class CheckersGame {
                 CheckersGame.getColRowFromIndex(this.activeTileIdx), // pass coords of 'active' tile
                 idxColRow   // and coords of adjacent enemy potentially being captured
             );
-            if (
+            if ( //check if next tile in path is empty
                 this.checkIfInBounds(newCoords) &&
                 this.checkForFriendly(newCoords) &&
                 this.checkForEnemy(newCoords)
-            ) return newCoords;
-            //check if next tile in path is empty
+            ) {
+                // cache the potentially captured tile, and return the location
+                // that our mover will be if it captures
+                this.tilesToBeCaptured[CheckersGame.getIndexFromColRow(newCoords)] = tile;
+                return newCoords;
+            }
             else return null;
         } else return idxColRow;
-    }
-    // return true iff has a piece AND that is an enemy
-    checkForPiece (idx) {
-        const piece = this.tileObjects[idx].playingPiece;
-        if (piece === null) return null;
-        else return piece.player;
     }
     // changes the 'moveable' bool to true for the 
     // tile at given index
@@ -158,6 +160,9 @@ class CheckersGame {
         this.tileObjects.forEach((tile) => {
             tile.canMoveHere = false;
         })
+    }
+    clearToBeCaptured () {
+        this.tilesToBeCaptured = {};
     }
 
     // converts an index in a 1-D array into 2-D array format
