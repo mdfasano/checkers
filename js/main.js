@@ -14,7 +14,6 @@ class CheckersGame {
         }
         // this event listener runs the whole game
         this.boardElement.addEventListener('click', (evt) => this.handleClick(evt));
-
         this.render();
     }
 
@@ -57,8 +56,11 @@ class CheckersGame {
             // if the player clicked on their own piece... 
             if (clickedTile.playingPiece.owner === this.turn) {
                 this.activeTileIdx = idx;
-                this.prepForMove(idx, clickedTile.playingPiece); // determine where it can move
-
+                const moveOptions = this.getMoveOptions(idx, clickedTile.playingPiece); // determine where it can move
+                moveOptions.forEach ((idxColRow) => {
+                    // add movable to tiles at [options]
+                    this.addMoveable(idxColRow);
+                })
             }
             //if target can be moved to, move current piece there
         } else if (clickedTile.canMoveHere === true) {
@@ -67,27 +69,15 @@ class CheckersGame {
                 clickedTile.playingPiece = clickedTile.playingPiece.kingMe();
             };
         }
-
         else this.clearMoveable()
-
-
-
-        // this.clearMoveable();
-        // // let idx = this.tileDomEls.indexOf(evt.target);
-        // console.log('clicked the board')
-        // const moveOptions = this.tileObjects[idx].checkMoveOptions (this.turn); // return array of index vals
-        // moveOptions.forEach(idx => {
-        //     console.log(idx);
-        //     const tileOwner = this.checkForPiece(idx);
-        //     this.addMoveable (this.tileDomEls[idx])
-        //     return idx;
-        // });
+        this.winner = this.checkForWinner();
         this.render ();
     }
 
-    // takes an index, a turn indicator, and a playingPiece obj
-    prepForMove (idx, piece) {
-        const idxColRow = CheckersGame.getColRowFromIndex (idx); // calc the col/row if given index
+    // takes an index and a playingPiece obj
+    // returns an array that holds coordinate objects
+    getMoveOptions (idx, piece) {
+        const idxColRow = CheckersGame.getColRowFromIndex(idx); // calc the col/row if given index
         let moveOptions = piece.whereCanIMove(idxColRow) // ask the playing piece where it can move
         moveOptions = moveOptions.filter(this.checkIfInBounds) // remove options outside gameboard
         // check for friendly tiles at [options]
@@ -101,10 +91,7 @@ class CheckersGame {
         //      -> generate new option by extrapolating rule
         //      ...later
         moveOptions = moveOptions.filter ((el) => el === null ? false : true);
-        // add movable to tiles at [options]
-        moveOptions.forEach((idxColRow) => {
-            this.addMoveable(idxColRow);
-        });
+        return moveOptions;
     }
     makeMove (tile) {
         const tempPiece = this.tileObjects[this.activeTileIdx].playingPiece;
@@ -171,6 +158,20 @@ class CheckersGame {
     clearToBeCaptured () {
         this.tilesToBeCaptured = {};
     }
+    checkForWinner () {
+        // this.tileObjects.forEach((tile, index) => {
+        for (let i = 0; i < this.tileObjects.length; i++) {
+            let moveOptions = [];
+            let tile = this.tileObjects[i]
+            if (tile.playingPiece && // if tile has a piece on it and
+                tile.playingPiece.owner === this.turn // that piece is owned by the active player
+                ) {
+                moveOptions = this.getMoveOptions(i, tile.playingPiece);
+                if (moveOptions.length > 0) return null; // no winner if anything can move
+            }
+        }
+        return this.turn*-1; // inactive player wins!
+    }
 
     // converts an index in a 1-D array into 2-D array format
     // returns an object holding the column and row index
@@ -192,11 +193,15 @@ class CheckersGame {
         // hide play again button if there is no winner (default state)
         if (this.winner !== null) {
             this.buttonElement.style.visibility = 'visible';
+            this.buttonElement.innerText = 'play again?'
         } else this.buttonElement.style.visibility = 'hidden';
     }
     renderMessage () {
         // inner text set to string indicated by 'turn' value
         this.messageElement.innerText = `${this.playerLookup[this.turn]}'s turn`;
+        if (this.winner !== null) {
+            this.messageElement.innerText = `${this.playerLookup[this.winner]} wins`
+        }
     }
     renderBoard () {
         this.tileObjects.forEach((tile, index) => {
@@ -315,6 +320,7 @@ class CheckersPiece {
 
     //render function
     renderPiece (domEl) {
+        CheckersPiece.renderRemovePiece(domEl);
         domEl.classList.add(CheckersPiece.classLookup[this.owner]);
     }
     static renderRemovePiece (domEl) {
@@ -354,13 +360,16 @@ let game;
 /* ---- cached dom elements ---*/
 const boardEl = document.getElementById('game-board');
 const messageEl = document.getElementById('message-area');
-const buttonEl = document.getElementById('button-area');
+const buttonEl = document.getElementById('play-again');
 
 /* --- functions --- */
-initialize ();
-
 function initialize () {
+    console.log('new game')
     game = new CheckersGame(boardEl, messageEl, buttonEl);
     game.play();
 
 }
+
+/* --- run the game --- */
+buttonEl.innerText = 'start game?'
+buttonEl.addEventListener('click', () => initialize());
