@@ -1,29 +1,18 @@
 # Checkers  
 
 ### Play a classic game of checkers locally against a friend!  
-
+### [Play the Game Here!](https://mdfasano.github.io/checkers/)
+> Click on a checkers piece to see where it can be moved, then click on the tile you would like to move it to.  
+> See the rules section below for a detailed description of the rules of the game!
 ---
-  
+
+
 
 ## Technologies Used
 -HTML  
 -CSS  
 -Javascript  
 -Figma
-
-## Game Images
-### Starting Screen
-![start screen](images/checkers_game_startscreen.jpg)  
-### Starting Board State
-![starting board state](images/game_images_initialboardstate.jpg)
-### Winning the Game
-![winning example](images/game_images_winning_example.jpg)
-### Example of a Piece being selected to move
-![selected a piece](images/game_images_selected_a_piece.jpg)
-### Capture example
-![capture example](images/game_images_handlecapture.jpg)
-### King example
-![king example](images/game_images_kinged.jpg)
 
 ##  Game Rules
 ### Basics
@@ -50,6 +39,19 @@
 - Leader pieces can move both backwards and forwards.
 - If a Leader is created after capturing an opponents piece, that Leader remains active and **may** choose to continue capturing pieces.
 
+## Game Images
+### Starting Screen
+![start screen](images/checkers_game_startscreen.jpg)  
+### Starting Board State
+![starting board state](images/game_images_initialboardstate.jpg)
+### Winning the Game
+![winning example](images/game_images_winning_example.jpg)
+### Example of a Piece being selected to move
+![selected a piece](images/game_images_selected_a_piece.jpg)
+### Capture example
+![capture example](images/game_images_handlecapture.jpg)
+### King example
+![king example](images/game_images_kinged.jpg)
 
 ## Additional features and future enhancements
 - Improve art elements
