@@ -19,9 +19,9 @@ body {
 }
 #play-again {
   position: absolute;
-  left: 350px;
+  left: 255px;
   bottom: 400px;
-  width: 200px;
+  width: flex;
   height: 200px;
   border-width: 10px;
   background-color: black;

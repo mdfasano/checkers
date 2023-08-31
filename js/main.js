@@ -505,5 +505,5 @@ function initialize() {
 }
 
 /* --- run the game --- */
-buttonEl.innerText = "start game?";
+buttonEl.innerText = "Play Checkers?";
 buttonEl.addEventListener("click", () => initialize());
