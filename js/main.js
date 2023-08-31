@@ -148,6 +148,7 @@ class CheckersGame {
             return canCapture;
         }
     }
+    // sets winner variable is a winner
     checkIfGameOver () {
         if (this.checkForLoser (1)) {
             if (this.checkForLoser (-1)) this.winner = 'T';
@@ -157,7 +158,8 @@ class CheckersGame {
         } else this.winner = null;
         this.render();
     }
-    // passed player indicator (1/-1), checks if that player has lost
+    // passed player indicator (1/-1)
+    // if given player can't make any moves, returns true
     checkForLoser (player) {
         // this.tileObjects.forEach((tile, index) => {
         for (let i = 0; i < this.tileObjects.length; i++) {
@@ -187,6 +189,8 @@ class CheckersGame {
         return moveOptions;
     }
 
+    // moves the piece indicated by activeTileIdx variable
+    // to the given tile
     makeMove (tile) {
         this.clearMoveable();
         const tempPiece = this.tileObjects[this.activeTileIdx].playingPiece;
@@ -197,6 +201,7 @@ class CheckersGame {
         };
         this.clearStateVars();
     }
+    //deletes a piece from a tile
     capturePiece (tile) {
         tile.playingPiece = null;
     }
@@ -219,10 +224,13 @@ class CheckersGame {
         const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
         return (tile.playingPiece && tile.playingPiece.owner !== this.turn) ? true : false;
     }
+    // returns true if the indicated tile has no piece on it
     checkForEmpty (idxColRow) {
         const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
         return tile.playingPiece === null ? true : false;
     }
+    // returns the resulting coordinates of a capture
+    // if that capture is not possible, returns null
     checkValidCapture (capturingTile, capturedTile) {
         const newCoords = CheckersPiece.whereAmIAfterCapture(
             capturingTile.tileInfo.coords, // pass coords of 'active' tile
@@ -238,6 +246,7 @@ class CheckersGame {
             return newCoords;
         } else return null;
     }
+    // returns true if the given row is either the first or last row
     checkIfKing (rowIdx) {
         if (rowIdx === 0 || rowIdx === CheckersGame.BOARD_SIZE-1) return true
         else return false;
@@ -253,6 +262,7 @@ class CheckersGame {
             tile.canMoveHere = false;
         });
     }
+    // resets the variables we use to remember past player clicks
     clearStateVars () {
         this.clearMoveable();
         this.activeTileIdx = null;
@@ -303,7 +313,7 @@ class BoardTile {
         this.playingPiece = null;
         this.tileInfo.index = index;
         this.tileInfo.coords = BoardTile.getLocIdx(index);
-        this.tileInfo.color = this.getTileColor(this.tileInfo.index);
+        this.tileInfo.color = this.getTileColor();
         if (this.tileInfo.color === 'dark') this.playingPiece = null;
         else {
             if (this.tileInfo.coords.rowIdx < 3) {
@@ -348,7 +358,7 @@ class BoardTile {
         }
     }
     // players can only move here if tile is light colored
-    getTileColor (index) {
+    getTileColor () {
         if ((this.tileInfo.coords.colIdx + this.tileInfo.coords.rowIdx) % 2) return 'dark';
         else  return 'light';
     }
