@@ -30,6 +30,7 @@ class CheckersGame {
     winner; // 1, -1, T for tie. null while game being played
     activeTileIdx = null; // used to 'remember' the clicked piece
     captureOptions = [] // used to 'remember' capturable pieces
+    captureChaining = false;
 
     /* --- funtions --- */
     play () {
@@ -71,6 +72,9 @@ class CheckersGame {
                     this.makeMove(this.tileObjects[moveToIdx]);
                     this.capturePiece(option.capturedPiece);
                     this.clearStateVars();
+                    if (!this.checkForOneCapture(this.tileObjects[moveToIdx], this.turn)) {
+                        this.turn *= -1;
+                    }
                     this.checkForCaptures(this.turn);
                     this.checkIfGameOver();
                     this.render();
@@ -99,7 +103,7 @@ class CheckersGame {
                 if (this.checkIfKing(clickedTile.tileInfo.coords.rowIdx)) {
                     clickedTile.playingPiece = clickedTile.playingPiece.kingMe();
                 };
-                this.clearStateVars();
+                this.turn *= -1;
                 this.checkForCaptures(this.turn);
                 this.checkIfGameOver();
                 this.render();
@@ -113,29 +117,35 @@ class CheckersGame {
     checkForCaptures (player) {
         this.captureOptions = []; // holds array of objects holding capture info
         for (let i = 0; i < this.tileObjects.length; i++) {
-            const captureInfo = {
-                moveTo: null,
-                capturingPiece: null,
-                capturedPiece: null
-            }
             const thisTile = this.tileObjects[i];
-            // run only on active players pieces
-            if (thisTile.playingPiece && thisTile.playingPiece.owner === player) {
-                let moveOptions = thisTile.playingPiece.whereCanIMove(thisTile.tileInfo.coords);
-                moveOptions = moveOptions.filter(this.checkIfInBounds);
-                moveOptions = moveOptions.filter((idxColRow) => this.checkForEnemy(idxColRow) ? true : false);
-                moveOptions.forEach((idxColRow) => {
-                    const capturedTile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)]
-                    captureInfo.moveTo = this.checkValidCapture(thisTile, capturedTile);
-                    if (captureInfo.moveTo !== null) {
-                        captureInfo.capturingPiece = thisTile;
-                        captureInfo.capturedPiece = capturedTile;
-                        this.captureOptions.push(captureInfo);
-                        this.addMoveable(captureInfo.moveTo);
-                    }
-                });
-                
-            }
+            this.checkForOneCapture(thisTile, player);
+        }
+    }
+    // pushes any captures that can be made from given tile 
+    // to the captureOptions array
+    checkForOneCapture (thisTile, player) {
+        const captureInfo = {
+            moveTo: null,
+            capturingPiece: null,
+            capturedPiece: null
+        }
+        let canCapture = false;
+        if (thisTile.playingPiece && thisTile.playingPiece.owner === player) {
+            let moveOptions = thisTile.playingPiece.whereCanIMove(thisTile.tileInfo.coords);
+            moveOptions = moveOptions.filter(this.checkIfInBounds);
+            moveOptions = moveOptions.filter((idxColRow) => this.checkForEnemy(idxColRow) ? true : false);
+            moveOptions.forEach((idxColRow) => {
+                const capturedTile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)]
+                captureInfo.moveTo = this.checkValidCapture(thisTile, capturedTile);
+                if (captureInfo.moveTo !== null) {
+                    captureInfo.capturingPiece = thisTile;
+                    captureInfo.capturedPiece = capturedTile;
+                    this.captureOptions.push(captureInfo);
+                    this.addMoveable(captureInfo.moveTo);
+                    canCapture = true;
+                }
+            });
+            return canCapture;
         }
     }
     checkIfGameOver () {
@@ -186,24 +196,9 @@ class CheckersGame {
             tile.playingPiece = tile.playingPiece.kingMe();
         };
         this.clearStateVars();
-        this.turn *= -1;
     }
     capturePiece (tile) {
         tile.playingPiece = null;
-    }
-    checkForMoreCaptures (tile) {
-        let moveOptions = this.getMoveOptions(tile.tileInfo.index, tile.playingPiece);
-        const captureOptions = [];
-        console.log('checkingformore');
-        console.log(moveOptions);
-        moveOptions.map ((idxColRow) => {
-            const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
-            let result = this.checkValidCapture(tile);
-            if (result !== null) captureOptions.push(result);
-        });
-        if (captureOptions.length === 0) return null;
-        else return captureOptions;
-        // moveOptions = moveOptions.filter()
     }
     // returns true iff given index is a valid location on gameboard
     checkIfInBounds (idxColRow) {
