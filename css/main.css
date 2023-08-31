@@ -2,28 +2,42 @@
   box-sizing: border-box;
 }
 body {
-  background-color: darkslategrey;
+  background-color: rgb(37, 37, 37);
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 100vh;
+  height: 850px;
+  width: 850px;
   margin: 0;
 }
-#message-area,
+#message-area {
+  color: white;
+  position: absolute;
+  font-size: 35px;
+  top: 35px;
+  left: 380px;
+}
+#play-again {
+  position: absolute;
+  left: 350px;
+  bottom: 400px;
+  width: 200px;
+  height: 200px;
+  border-width: 10px;
+  background-color: black;
+  color: white;
+  border-color: black;
+  font-size: 50px;
+}
 #button-area {
-  position: relative;
-  align-items: center;
-  margin-top: 2vmin;
-  margin-left: 40vmin;
-  padding-left: 5vmin;
-  justify-content: center;
+  text-align: center;
 }
 #game-board {
   display: grid;
   grid-template-columns: repeat(8, 100px);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  margin-top: 5vmin;
+  margin-top: 10vmin;
   margin-left: 5vmin;
   margin-right: 5vmin;
 }

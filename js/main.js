@@ -30,7 +30,7 @@ class CheckersGame {
   activeTileIdx = null; // used to 'remember' the clicked piece
   captureOptions = []; // used to 'remember' capturable pieces
 
-  /* --- funtions --- */
+  /* --- functions --- */
   play() {
     this.turn = 1; // black goes first
     this.winner = null; // we begin with no winner
@@ -334,7 +334,7 @@ class CheckersGame {
       this.messageElement.innerText = `${this.playerLookup[this.winner]} wins`;
     }
   }
-  
+
   renderBoard() {
     this.tileObjects.forEach((tile, index) => {
       tile.renderTile(this.tileDomEls[index]);
@@ -500,7 +500,6 @@ const buttonEl = document.getElementById("play-again");
 
 /* --- functions --- */
 function initialize() {
-  console.log("new game");
   game = new CheckersGame(boardEl, messageEl, buttonEl);
   game.play();
 }
