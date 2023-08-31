@@ -19,7 +19,6 @@ class CheckersGame {
 
   /* --- constants defining a game of Checkers --- */
   static BOARD_SIZE = 8;
-
   playerLookup = {
     1: "black",
     "-1": "white",
@@ -30,7 +29,6 @@ class CheckersGame {
   winner; // 1, -1, T for tie. null while game being played
   activeTileIdx = null; // used to 'remember' the clicked piece
   captureOptions = []; // used to 'remember' capturable pieces
-  captureChaining = false;
 
   /* --- funtions --- */
   play() {
@@ -126,6 +124,7 @@ class CheckersGame {
       this.checkForOneCapture(thisTile, player);
     }
   }
+
   // pushes any captures that can be made from given tile
   // to the captureOptions array
   checkForOneCapture(thisTile, player) {
@@ -158,6 +157,7 @@ class CheckersGame {
       return canCapture;
     }
   }
+
   // sets winner variable is a winner
   checkIfGameOver() {
     if (this.checkForLoser(1)) {
@@ -168,6 +168,7 @@ class CheckersGame {
     } else this.winner = null;
     this.render();
   }
+
   // passed player indicator (1/-1)
   // if given player can't make any moves, returns true
   checkForLoser(player) {
@@ -214,10 +215,12 @@ class CheckersGame {
     }
     this.clearStateVars();
   }
+
   //deletes a piece from a tile
   capturePiece(tile) {
     tile.playingPiece = null;
   }
+
   // returns true iff given index is a valid location on gameboard
   checkIfInBounds(idxColRow) {
     if (
@@ -229,6 +232,7 @@ class CheckersGame {
       return true;
     else return false;
   }
+
   // return true iff tile contains friendly playing piece
   checkForFriendly(idxColRow) {
     const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
@@ -236,6 +240,7 @@ class CheckersGame {
       ? true
       : false;
   }
+
   // return true iff tile contains enemy playing piece
   checkForEnemy(idxColRow) {
     const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
@@ -243,11 +248,13 @@ class CheckersGame {
       ? true
       : false;
   }
+
   // returns true if the indicated tile has no piece on it
   checkForEmpty(idxColRow) {
     const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
     return tile.playingPiece === null ? true : false;
   }
+
   // returns the resulting coordinates of a capture
   // if that capture is not possible, returns null
   checkValidCapture(capturingTile, capturedTile) {
@@ -266,22 +273,26 @@ class CheckersGame {
       return newCoords;
     } else return null;
   }
+
   // returns true if the given row is either the first or last row
   checkIfKing(rowIdx) {
     if (rowIdx === 0 || rowIdx === CheckersGame.BOARD_SIZE - 1) return true;
     else return false;
   }
+
   // changes the 'moveable' bool to true for the tile at given index
   addMoveable(idxColRow) {
     const idx = CheckersGame.getIndexFromColRow(idxColRow);
     this.tileObjects[idx].canMoveHere = true;
   }
+
   // sets ALL 'movable' booleans to false
   clearMoveable() {
     this.tileObjects.forEach((tile) => {
       tile.canMoveHere = false;
     });
   }
+
   // resets the variables we use to remember past player clicks
   clearStateVars() {
     this.clearMoveable();
@@ -297,14 +308,17 @@ class CheckersGame {
       rowIdx: Math.floor(index / CheckersGame.BOARD_SIZE),
     };
   }
+
   static getIndexFromColRow(idxColRow) {
     return idxColRow.colIdx + idxColRow.rowIdx * CheckersGame.BOARD_SIZE;
   }
+
   render() {
     this.renderButtons();
     this.renderMessage();
     this.renderBoard();
   }
+
   renderButtons() {
     // hide play again button if there is no winner (default state)
     if (this.winner !== null) {
@@ -312,6 +326,7 @@ class CheckersGame {
       this.buttonElement.innerText = "play again?";
     } else this.buttonElement.style.visibility = "hidden";
   }
+
   renderMessage() {
     // inner text set to string indicated by 'turn' value
     this.messageElement.innerText = `${this.playerLookup[this.turn]}'s turn`;
@@ -319,6 +334,7 @@ class CheckersGame {
       this.messageElement.innerText = `${this.playerLookup[this.winner]} wins`;
     }
   }
+  
   renderBoard() {
     this.tileObjects.forEach((tile, index) => {
       tile.renderTile(this.tileDomEls[index]);
@@ -413,6 +429,7 @@ class CheckersPiece {
     moveOptions.push(this.makeLocationObj(col - 1, row));
     return moveOptions;
   }
+
   // returns the coordinates a piece would be at if it initiated a
   // capture from the positions described by params
   static whereAmIAfterCapture(startingCoords, capturedPieceCoords) {
@@ -423,6 +440,7 @@ class CheckersPiece {
       rowIdx: capturedPieceCoords.rowIdx + newRowMod,
     };
   }
+
   // packs col and row numbers into an object
   // with appropriate key names
   makeLocationObj(col, row) {
@@ -438,6 +456,7 @@ class CheckersPiece {
     CheckersPiece.renderRemovePiece(domEl);
     domEl.classList.add(CheckersPiece.classLookup[this.owner]);
   }
+
   static renderRemovePiece(domEl) {
     domEl.classList.remove("king");
     domEl.classList.remove(CheckersPiece.classLookup[1]);
@@ -463,6 +482,7 @@ class KingPiece extends CheckersPiece {
     moveOptions.push(this.makeLocationObj(col - 1, row2));
     return moveOptions;
   }
+
   // special render function
   renderPiece(domEl) {
     super.renderPiece(domEl);
