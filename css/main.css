@@ -9,7 +9,8 @@ body {
   height: 100vh;
   margin: 0;
 }
-#message-area, #button-area {
+#message-area,
+#button-area {
   position: relative;
   align-items: center;
   margin-top: 2vmin;
@@ -38,15 +39,17 @@ body {
 div.moveable {
   border-radius: 10px;
   border-color: rgb(177, 189, 12);
-  background-color:rgb(197, 194, 8)
-} 
-.team-black, .team-white {
+  background-color: rgb(197, 194, 8);
+}
+.team-black,
+.team-white {
   background-size: 95%;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-.team-black:hover, .team-white:hover {
+.team-black:hover,
+.team-white:hover {
   border-radius: 10px;
   background-size: 86%;
   border-color: rgb(255, 2, 2);
@@ -59,8 +62,16 @@ div.moveable {
 }
 
 /* classes to add when a piece gets moved to a square */
-.team-black { background-image: url(../images/checkerspiecedark.jpg); }
-.team-white { background-image: url(../images/checkerspiecelight.jpg); }
+.team-black {
+  background-image: url(../images/checkerspiecedark.jpg);
+}
+.team-white {
+  background-image: url(../images/checkerspiecelight.jpg);
+}
 
-.team-black.king { background-image: url(../images/checkerspiecedarkking.jpg); }
-.team-white.king { background-image: url(../images/checkerspiecelightking.jpg); }
+.team-black.king {
+  background-image: url(../images/checkerspiecedarkking.jpg);
+}
+.team-white.king {
+  background-image: url(../images/checkerspiecelightking.jpg);
+}
