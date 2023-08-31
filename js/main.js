@@ -28,81 +28,182 @@ class CheckersGame {
     /* --- necessary variables --- */
     turn; // 1 or -1
     winner; // 1, -1, T for tie. null while game being played
-    activeTileIdx = null;
-    tilesToBeCaptured = {}
+    activeTileIdx = null; // used to 'remember' the clicked piece
+    captureOptions = [] // used to 'remember' capturable pieces
+
     /* --- funtions --- */
     play () {
         this.turn = 1; // black goes first
         this.winner = null; // we begin with no winner
-    
+        this.clearStateVars;
         // display player turn is:...
         // after the first render, game is active and players can progress
         // the game through clicking the board
         this.render();
-    }
+    } 
 
     handleClick (evt) {
         // convert click target to index
         // index lets us access both versions of clicked tile
         const idx = this.tileDomEls.indexOf(evt.target);
         const clickedTile = this.tileObjects[idx];
-        //make sure clicked element is a board tile
+
+        this.checkIfGameOver(); // check board state for winner
+        this.checkForCaptures(this.turn); // and for possible captures by current player
+
+        //make sure clicked element is a 'light' board tile
         if (idx === -1 || clickedTile.tileInfo.color === 'dark') {
-            this.activeTile = null;
-            this.clearMoveable(); 
-        } else if (clickedTile.playingPiece !== null) {
-        // if target contains a piece already...
-            this.clearMoveable();
-            // if the player clicked on their own piece... 
-            if (clickedTile.playingPiece.owner === this.turn) {
-                this.activeTileIdx = idx;
-                const moveOptions = this.getMoveOptions(idx, clickedTile.playingPiece); // determine where it can move
-                moveOptions.forEach ((idxColRow) => {
-                    // add movable to tiles at [options]
-                    this.addMoveable(idxColRow);
-                })
-            }
-            //if target can be moved to, move current piece there
-        } else if (clickedTile.canMoveHere === true) {
-            this.makeMove(clickedTile);
-            if (this.checkIfKing(clickedTile.tileInfo.coords.rowIdx)) {
-                clickedTile.playingPiece = clickedTile.playingPiece.kingMe();
-            };
+            this.clearStateVars();
+            this.checkForCaptures(this.turn);
+            this.render();
+            return;
         }
-        else this.clearMoveable()
-        this.winner = this.checkForWinner();
-        this.render ();
+        for (let i = 0; i < this.captureOptions.length; i++) { 
+            let option = this.captureOptions[i];
+            this.addMoveable(option.moveTo);
+            let moveToIdx = CheckersGame.getIndexFromColRow(option.moveTo);
+            // executes if click target is any of...
+            if (moveToIdx === clickedTile.tileInfo.index || //tile to be moved to after capture
+                option.capturingPiece.tileInfo.index === clickedTile.tileInfo.index ||  //capturing piece
+                option.capturedPiece.tileInfo.index === clickedTile.tileInfo.index  //captured piece
+                ) {
+                    this.activeTileIdx = option.capturingPiece.tileInfo.index;
+                    this.makeMove(this.tileObjects[moveToIdx]);
+                    this.capturePiece(option.capturedPiece);
+                    this.clearStateVars();
+                    this.checkForCaptures(this.turn);
+                    this.checkIfGameOver();
+                    this.render();
+                    return;
+            }
+        }
+        if (this.captureOptions.length === 0) {
+            if (clickedTile.playingPiece !== null) {
+            // if target contains a piece already...
+                this.clearStateVars();
+                // if the player clicked on their own piece... 
+                if (clickedTile.playingPiece.owner === this.turn) {
+                    this.activeTileIdx = idx;
+                    const moveOptions = this.getMoveOptions(idx, clickedTile.playingPiece); // determine where it can move
+                    moveOptions.forEach ((idxColRow) => {
+                        // add movable to tiles at [options]
+                        if (idxColRow !== null || idxColRow !== undefined) this.addMoveable(idxColRow);
+                    });
+                    this.checkIfGameOver();
+                    this.render();
+                    return;
+                }
+                //if target can be moved to, move current piece there
+            } else if (clickedTile.canMoveHere === true) {
+                this.makeMove(clickedTile);
+                if (this.checkIfKing(clickedTile.tileInfo.coords.rowIdx)) {
+                    clickedTile.playingPiece = clickedTile.playingPiece.kingMe();
+                };
+                this.clearStateVars();
+                this.checkForCaptures(this.turn);
+                this.checkIfGameOver();
+                this.render();
+                return;
+            }
+        }
+    }
+
+    // first clears captureOptions array, then populates that
+    //  array with any possible captures by given player
+    checkForCaptures (player) {
+        this.captureOptions = []; // holds array of objects holding capture info
+        for (let i = 0; i < this.tileObjects.length; i++) {
+            const captureInfo = {
+                moveTo: null,
+                capturingPiece: null,
+                capturedPiece: null
+            }
+            const thisTile = this.tileObjects[i];
+            // run only on active players pieces
+            if (thisTile.playingPiece && thisTile.playingPiece.owner === player) {
+                let moveOptions = thisTile.playingPiece.whereCanIMove(thisTile.tileInfo.coords);
+                moveOptions = moveOptions.filter(this.checkIfInBounds);
+                moveOptions = moveOptions.filter((idxColRow) => this.checkForEnemy(idxColRow) ? true : false);
+                moveOptions.forEach((idxColRow) => {
+                    const capturedTile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)]
+                    captureInfo.moveTo = this.checkValidCapture(thisTile, capturedTile);
+                    if (captureInfo.moveTo !== null) {
+                        captureInfo.capturingPiece = thisTile;
+                        captureInfo.capturedPiece = capturedTile;
+                        this.captureOptions.push(captureInfo);
+                        this.addMoveable(captureInfo.moveTo);
+                    }
+                });
+                
+            }
+        }
+    }
+    checkIfGameOver () {
+        if (this.checkForLoser (1)) {
+            if (this.checkForLoser (-1)) this.winner = 'T';
+            else this.winner = -1;
+        } else if (this.checkForLoser (-1)) {
+            this.winner = 1;
+        } else this.winner = null;
+        this.render();
+    }
+    // passed player indicator (1/-1), checks if that player has lost
+    checkForLoser (player) {
+        // this.tileObjects.forEach((tile, index) => {
+        for (let i = 0; i < this.tileObjects.length; i++) {
+            let moveOptions = [];
+            let tile = this.tileObjects[i]
+            if (tile.playingPiece && // if tile has a piece on it and
+                tile.playingPiece.owner === player // that piece is owned by player we are checking
+                ) {
+                moveOptions = this.getMoveOptions(i, tile.playingPiece);
+                if (moveOptions.length > 0) return false; // no winner if anything can move
+            }
+        }
+        return true; // inactive player wins!
     }
 
     // takes an index and a playingPiece obj
     // returns an array that holds coordinate objects
+    // assumes there are no pieces to be captured
     getMoveOptions (idx, piece) {
-        const idxColRow = CheckersGame.getColRowFromIndex(idx); // calc the col/row if given index
+        const idxColRow = CheckersGame.getColRowFromIndex(idx); // calc the col/row of given index
         let moveOptions = piece.whereCanIMove(idxColRow) // ask the playing piece where it can move
-        moveOptions = moveOptions.filter(this.checkIfInBounds) // remove options outside gameboard
-        // check for friendly tiles at [options]
-        moveOptions = moveOptions.filter((idxColRow) => {
-            // filter out options that are blocked by same team pieces
-            if (this.checkForFriendly(idxColRow)) return true
-            else return false
-        });
-        // check for enemy tiles at [options]
-        moveOptions = moveOptions.map ((idxColRow) => this.checkForEnemy(idxColRow));
-        //      -> generate new option by extrapolating rule
-        //      ...later
-        moveOptions = moveOptions.filter ((el) => el === null ? false : true);
+
+        // filter out options that are blocked by other pieces or outside gameboard
+        moveOptions = moveOptions.filter(this.checkIfInBounds)
+        moveOptions = moveOptions.filter ((idxColRow) => this.checkForEmpty(idxColRow) ? true : false);
+
         return moveOptions;
     }
+
     makeMove (tile) {
+        this.clearMoveable();
         const tempPiece = this.tileObjects[this.activeTileIdx].playingPiece;
         tile.playingPiece = tempPiece;
         this.tileObjects[this.activeTileIdx].playingPiece = null;
-        if (this.tilesToBeCaptured[tile.tileInfo.index]) { // if we are making a capture delete captured piece
-            this.tilesToBeCaptured[tile.tileInfo.index].playingPiece = null;
-        }
-        this.clearMoveable();
-        this.clearToBeCaptured();
+        if (this.checkIfKing(tile.tileInfo.coords.rowIdx)) {
+            tile.playingPiece = tile.playingPiece.kingMe();
+        };
+        this.clearStateVars();
         this.turn *= -1;
+    }
+    capturePiece (tile) {
+        tile.playingPiece = null;
+    }
+    checkForMoreCaptures (tile) {
+        let moveOptions = this.getMoveOptions(tile.tileInfo.index, tile.playingPiece);
+        const captureOptions = [];
+        console.log('checkingformore');
+        console.log(moveOptions);
+        moveOptions.map ((idxColRow) => {
+            const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
+            let result = this.checkValidCapture(tile);
+            if (result !== null) captureOptions.push(result);
+        });
+        if (captureOptions.length === 0) return null;
+        else return captureOptions;
+        // moveOptions = moveOptions.filter()
     }
     // returns true iff given index is a valid location on gameboard
     checkIfInBounds (idxColRow) {
@@ -113,38 +214,40 @@ class CheckersGame {
             ) return true;
             else return false;
     }
+    // return true iff tile contains friendly playing piece
     checkForFriendly (idxColRow) {
         const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
-        return (tile.playingPiece && tile.playingPiece.owner === this.turn) ? false : true;
+        return (tile.playingPiece && tile.playingPiece.owner === this.turn) ? true : false;
     }
+    // return true iff tile contains enemy playing piece
     checkForEnemy (idxColRow) {
         const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
-        if (tile.playingPiece && tile.playingPiece.owner !== this.turn) {
-            // if the tile is an enemy
-            const newCoords = CheckersPiece.whereAmIAfterCapture(
-                // get the tile that we would end up at if a capture happened here
-                CheckersGame.getColRowFromIndex(this.activeTileIdx), // pass coords of 'active' tile
-                idxColRow   // and coords of adjacent enemy potentially being captured
-            );
-            if ( //check if next tile in path is empty
-                this.checkIfInBounds(newCoords) &&
-                this.checkForFriendly(newCoords) &&
-                this.checkForEnemy(newCoords)
-            ) {
-                // cache the potentially captured tile, and return the location
-                // that our mover will be if it captures
-                this.tilesToBeCaptured[CheckersGame.getIndexFromColRow(newCoords)] = tile;
-                return newCoords;
-            }
-            else return null;
-        } else return idxColRow;
+        return (tile.playingPiece && tile.playingPiece.owner !== this.turn) ? true : false;
+    }
+    checkForEmpty (idxColRow) {
+        const tile = this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
+        return tile.playingPiece === null ? true : false;
+    }
+    checkValidCapture (capturingTile, capturedTile) {
+        const newCoords = CheckersPiece.whereAmIAfterCapture(
+            capturingTile.tileInfo.coords, // pass coords of 'active' tile
+            capturedTile.tileInfo.coords   // and coords of adjacent enemy potentially being captured
+        );
+        if ( //check if next tile in path is empty
+            this.checkIfInBounds(newCoords) &&
+            !this.checkForFriendly(newCoords) &&
+            !this.checkForEnemy(newCoords)
+        ) {
+            // cache the potentially captured tile, and return the location
+            // that our mover will be if it captures
+            return newCoords;
+        } else return null;
     }
     checkIfKing (rowIdx) {
         if (rowIdx === 0 || rowIdx === CheckersGame.BOARD_SIZE-1) return true
         else return false;
     }
-    // changes the 'moveable' bool to true for the 
-    // tile at given index
+    // changes the 'moveable' bool to true for the tile at given index
     addMoveable (idxColRow) {
         const idx = CheckersGame.getIndexFromColRow(idxColRow);
         this.tileObjects[idx].canMoveHere = true;
@@ -153,24 +256,12 @@ class CheckersGame {
     clearMoveable () {
         this.tileObjects.forEach((tile) => {
             tile.canMoveHere = false;
-        })
+        });
     }
-    clearToBeCaptured () {
-        this.tilesToBeCaptured = {};
-    }
-    checkForWinner () {
-        // this.tileObjects.forEach((tile, index) => {
-        for (let i = 0; i < this.tileObjects.length; i++) {
-            let moveOptions = [];
-            let tile = this.tileObjects[i]
-            if (tile.playingPiece && // if tile has a piece on it and
-                tile.playingPiece.owner === this.turn // that piece is owned by the active player
-                ) {
-                moveOptions = this.getMoveOptions(i, tile.playingPiece);
-                if (moveOptions.length > 0) return null; // no winner if anything can move
-            }
-        }
-        return this.turn*-1; // inactive player wins!
+    clearStateVars () {
+        this.clearMoveable();
+        this.activeTileIdx = null;
+        this.captureOptions = [];
     }
 
     // converts an index in a 1-D array into 2-D array format
@@ -324,6 +415,7 @@ class CheckersPiece {
         domEl.classList.add(CheckersPiece.classLookup[this.owner]);
     }
     static renderRemovePiece (domEl) {
+        domEl.classList.remove('king')
         domEl.classList.remove(CheckersPiece.classLookup[1])
         domEl.classList.remove(CheckersPiece.classLookup[-1])
     }
