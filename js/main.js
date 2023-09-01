@@ -128,16 +128,9 @@ class CheckersGame {
   // pushes any captures that can be made from given tile
   // to the captureOptions array
   checkForOneCapture(thisTile, player) {
-    const captureInfo = {
-      moveTo: null,
-      capturingPiece: null,
-      capturedPiece: null,
-    };
     let canCapture = false;
     if (thisTile.playingPiece && thisTile.playingPiece.owner === player) {
-      let moveOptions = thisTile.playingPiece.whereCanIMove(
-        thisTile.tileInfo.coords
-      );
+      let moveOptions = thisTile.playingPiece.whereCanIMove(thisTile.tileInfo.coords);
       moveOptions = moveOptions.filter(this.checkIfInBounds);
       moveOptions = moveOptions.filter((idxColRow) =>
         this.checkForEnemy(idxColRow) ? true : false
@@ -145,8 +138,10 @@ class CheckersGame {
       moveOptions.forEach((idxColRow) => {
         const capturedTile =
           this.tileObjects[CheckersGame.getIndexFromColRow(idxColRow)];
-        captureInfo.moveTo = this.checkValidCapture(thisTile, capturedTile);
-        if (captureInfo.moveTo !== null) {
+        const moveTo = this.checkValidCapture(thisTile, capturedTile);
+        if (moveTo !== null) {
+          const captureInfo = {};
+          captureInfo.moveTo = moveTo;
           captureInfo.capturingPiece = thisTile;
           captureInfo.capturedPiece = capturedTile;
           this.captureOptions.push(captureInfo);
